@@ -133,29 +133,9 @@ streamlit run app.py
 
 ## 📦 Deployment
 
-### Streamlit Community Cloud (Recommended - Currently Deployed!)
-1. Push your code to GitHub
-2. Go to [share.streamlit.io](https://share.streamlit.io)
-3. Connect your repository
-4. Deploy with one click!
+**Live Application:** [https://tb-bangalore-housing-prediction.streamlit.app/](https://tb-bangalore-housing-prediction.streamlit.app/)
 
-**Current Deployment:** [https://tb-bangalore-housing-prediction.streamlit.app/](https://tb-bangalore-housing-prediction.streamlit.app/)
-
-### Other Platforms
-
-**Railway:**
-- Connect your GitHub repository
-- Set start command: `streamlit run app.py --server.port=$PORT --server.address=0.0.0.0`
-- Deploy automatically
-
-**Render:**
-- Connect your GitHub repository
-- Set start command: `streamlit run app.py --server.port=$PORT --server.address=0.0.0.0`
-- Deploy with free tier
-
-**Google Cloud Run / AWS / Azure:**
-- Deploy as containerized application
-- Use Dockerfile with Streamlit configuration
+The application is deployed on Streamlit Community Cloud and is freely accessible to anyone.
 
 ## 🛠️ Technology Stack
 
