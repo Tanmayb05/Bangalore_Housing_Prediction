@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for better UI
+# Custom CSS for better UI with sound effects
 st.markdown("""
     <style>
     .main {
@@ -26,9 +26,14 @@ st.markdown("""
         border-radius: 10px;
         font-size: 18px;
         font-weight: bold;
+        transition: all 0.3s ease;
     }
     .stButton>button:hover {
         background-color: #45a049;
+        transform: scale(1.02);
+    }
+    .stButton>button:active {
+        transform: scale(0.98);
     }
     .price-box {
         padding: 20px;
@@ -53,6 +58,49 @@ st.markdown("""
         color: #333333;
     }
     </style>
+
+    <script>
+    // Sound effects
+    const playSound = (type) => {
+        const sounds = {
+            click: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTUIGWi77eeeTRAKT6fj77RhGgU0jNXwzn0vBSh+zPLaizsKF2G36+mhUhELTKXh8rNfGgU0i9Twz38xBSh+zPLaizsKF2G36+mhUhELTKXh8rNfGgU0i9Twz38xBSh+',
+            hover: 'data:audio/wav;base64,UklGRhIAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YZAAAAAAQEZMU05UWVxdXVxZVlBKQ0A+Oz45ODc3Nzg5Ozw+QEREREVFREVFRERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERE',
+            expand: 'data:audio/wav;base64,UklGRhQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAA'
+        };
+        const audio = new Audio(sounds[type] || sounds.click);
+        audio.volume = 0.3;
+        audio.play().catch(e => console.log('Audio play failed:', e));
+    };
+
+    // Add click sound to buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+            playSound('click');
+        }
+    });
+
+    // Add hover sound
+    document.addEventListener('mouseover', (e) => {
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+            playSound('hover');
+        }
+    });
+
+    // Add expand sound for expanders
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.target.classList && mutation.target.classList.contains('streamlit-expanderHeader')) {
+                playSound('expand');
+            }
+        });
+    });
+
+    observer.observe(document.body, {
+        attributes: true,
+        subtree: true,
+        attributeFilter: ['class']
+    });
+    </script>
 """, unsafe_allow_html=True)
 
 # Load model and artifacts
@@ -93,115 +141,120 @@ try:
     # Header
     st.title("🏠 Bangalore House Price Predictor")
     st.markdown("### Get accurate price predictions for houses in Bangalore")
+
+    # About section - always visible
+    st.markdown("""
+    This prediction model uses machine learning to estimate house prices in Bangalore based on:
+    **Location/Area**, **Total square footage**, **Number of bedrooms (BHK)**, **Number of bathrooms**, and **Number of balconies**.
+    """)
+
+    # Tips and Quick Stats side by side
+    expander_col1, expander_col2 = st.columns(2)
+
+    with expander_col1:
+        with st.expander("💡 Tips"):
+            st.markdown("""
+            - Prices are shown in **Lakhs** (1 Lakh = ₹100,000)
+            - The model is trained on historical data from 2017-2018
+            - Actual prices may vary based on current market conditions
+            - Price per sq ft helps compare value across properties
+            """)
+
+    with expander_col2:
+        with st.expander("📊 Dataset Info"):
+            st.markdown("""
+            - **Source**: Kaggle - Bengaluru House Price Data
+            - **Size**: ~938 KB
+            - **Data Period**: 2017-2018
+            - **Total Entries**: 13,320 properties
+            - **License**: CC0 Public Domain
+            """)
+
     st.markdown("---")
 
-    # Create centered container with max width
-    col1, col2 = st.columns([3, 2])
+    # Main content in single column
+    st.subheader("📋 Enter Property Details")
 
-    with col1:
-        st.subheader("📋 Enter Property Details")
+    # Location selection
+    location = st.selectbox(
+        "🗺️ Location",
+        options=sorted(locations),
+        help="Select the location/area in Bangalore"
+    )
 
-        # Location selection
-        location = st.selectbox(
-            "🗺️ Location",
-            options=sorted(locations),
-            help="Select the location/area in Bangalore"
+    # Create sub-columns for numeric inputs
+    input_col1, input_col2 = st.columns(2)
+
+    with input_col1:
+        total_sqft = st.number_input(
+            "📏 Total Square Feet",
+            min_value=300,
+            max_value=30000,
+            value=1000,
+            step=50,
+            help="Enter the total area in square feet"
         )
 
-        # Create sub-columns for numeric inputs
-        input_col1, input_col2 = st.columns(2)
+        bhk = st.selectbox(
+            "🛏️ BHK",
+            options=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            index=2,
+            help="Number of bedrooms"
+        )
 
-        with input_col1:
-            total_sqft = st.number_input(
-                "📏 Total Square Feet",
-                min_value=300,
-                max_value=30000,
-                value=1000,
-                step=50,
-                help="Enter the total area in square feet"
+    with input_col2:
+        bath = st.selectbox(
+            "🚿 Bathrooms",
+            options=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            index=1,
+            help="Number of bathrooms"
+        )
+
+        balcony = st.selectbox(
+            "🏞️ Balconies",
+            options=[0, 1, 2, 3, 4],
+            index=1,
+            help="Number of balconies"
+        )
+
+    # Predict button
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("🔮 Predict Price"):
+        with st.spinner("Calculating price..."):
+            predicted_price = get_estimated_price(
+                location, total_sqft, bhk, bath, balcony, model, data_columns
             )
 
-            bhk = st.selectbox(
-                "🛏️ BHK",
-                options=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                index=2,
-                help="Number of bedrooms"
-            )
+            # Store in session state
+            st.session_state['show_metrics'] = True
+            st.session_state['predicted_price'] = predicted_price
+            st.session_state['total_sqft'] = total_sqft
+            st.session_state['bhk'] = bhk
+            st.session_state['bath'] = bath
 
-        with input_col2:
-            bath = st.selectbox(
-                "🚿 Bathrooms",
-                options=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                index=1,
-                help="Number of bathrooms"
-            )
+            # Display result
+            st.markdown(f"""
+                <div class="price-box">
+                    <h2>Estimated Price</h2>
+                    <h1>₹ {predicted_price:,.2f} Lakhs</h1>
+                    <p>≈ ₹ {predicted_price * 100000:,.0f}</p>
+                </div>
+            """, unsafe_allow_html=True)
 
-            balcony = st.selectbox(
-                "🏞️ Balconies",
-                options=[0, 1, 2, 3, 4],
-                index=1,
-                help="Number of balconies"
-            )
+    # Additional metrics in full width below prediction
+    if st.session_state.get('show_metrics', False):
+        st.markdown("---")
+        st.markdown("### 📊 Property Details")
 
-        # Predict button
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("🔮 Predict Price"):
-            with st.spinner("Calculating price..."):
-                predicted_price = get_estimated_price(
-                    location, total_sqft, bhk, bath, balcony, model, data_columns
-                )
+        price_per_sqft = (st.session_state['predicted_price'] * 100000) / st.session_state['total_sqft']
+        metrics_col1, metrics_col2, metrics_col3 = st.columns(3)
 
-                # Display result
-                st.markdown(f"""
-                    <div class="price-box">
-                        <h2>Estimated Price</h2>
-                        <h1>₹ {predicted_price:,.2f} Lakhs</h1>
-                        <p>≈ ₹ {predicted_price * 100000:,.0f}</p>
-                    </div>
-                """, unsafe_allow_html=True)
-
-                # Additional metrics
-                price_per_sqft = (predicted_price * 100000) / total_sqft
-                metrics_col1, metrics_col2, metrics_col3 = st.columns(3)
-
-                with metrics_col1:
-                    st.metric("Price per sq ft", f"₹ {price_per_sqft:,.0f}")
-                with metrics_col2:
-                    st.metric("Total Area", f"{total_sqft:,.0f} sq ft")
-                with metrics_col3:
-                    st.metric("Configuration", f"{bhk} BHK, {bath} Bath")
-
-    with col2:
-        st.subheader("ℹ️ Information")
-
-        st.markdown("""
-            <div class="info-box">
-                <h4>📍 About This Tool</h4>
-                <p>This prediction model uses machine learning to estimate house prices in Bangalore based on:</p>
-                <ul>
-                    <li>Location/Area</li>
-                    <li>Total square footage</li>
-                    <li>Number of bedrooms (BHK)</li>
-                    <li>Number of bathrooms</li>
-                </ul>
-            </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-            <div class="info-box">
-                <h4>💡 Tips</h4>
-                <ul>
-                    <li>Prices are shown in Lakhs (1 Lakh = 100,000)</li>
-                    <li>The model is trained on historical data</li>
-                    <li>Actual prices may vary based on market conditions</li>
-                </ul>
-            </div>
-        """, unsafe_allow_html=True)
-
-        # Statistics
-        st.markdown("### 📊 Quick Stats")
-        st.info(f"**{len(locations)}** locations available")
-        st.info(f"**{len(data_columns)}** features analyzed")
+        with metrics_col1:
+            st.metric("💰 Price per sq ft", f"₹ {price_per_sqft:,.0f}")
+        with metrics_col2:
+            st.metric("📐 Total Area", f"{st.session_state['total_sqft']:,.0f} sq ft")
+        with metrics_col3:
+            st.metric("🏠 Configuration", f"{st.session_state['bhk']} BHK, {st.session_state['bath']} Bath")
 
     # Footer
     st.markdown("---")
