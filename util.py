@@ -35,7 +35,7 @@ def load_saved_artifacts():
         __data_columns = json.load(f)['data_columns']
         __locations = __data_columns[4:]
 
-    with open('C:\\Users\\Lenovo\\Documents\\Dropbox\\Github\\Bangalore_Housing_Prediction\\artifacts\\bangalore_home_prices_model.pickle','rb') as f:
+    with open('./artifacts/bangalore_home_prices_model.pickle','rb') as f:
         __model = pickle.load(f)
     print('Loading Saved Artifacts... Done')
 
