@@ -1,5 +1,31 @@
 # Bangalore_Housing_Prediction
-Bangalore Housing Prediction Using Python, Machine Learning & Modern Web Frameworks
+Bangalore Housing Prediction Using Python, Machine Learning & Streamlit
+
+🚀 **Live Demo:** [https://tb-bangalore-housing-prediction.streamlit.app/](https://tb-bangalore-housing-prediction.streamlit.app/)
+
+## 📸 Screenshots
+
+### Price Prediction
+![Price Prediction](screenshots/prediction.png)
+*Interactive price prediction with real-time estimates and property details*
+
+### Data Visualization - Price Analysis
+![Price Analysis](screenshots/price-analysis.png)
+*2 BHK vs 3 BHK price comparison across different locations*
+
+### Data Visualization - Price Distribution
+![Price Distribution](screenshots/price-distribution.png)
+*Distribution of price per square feet with statistical metrics*
+
+## ✨ Features
+
+- 🏠 **Interactive Price Prediction** - Get instant house price estimates
+- 📊 **Data Visualizations** - Explore price trends and distributions
+- 🗺️ **237+ Locations** - Covers major areas across Bangalore
+- 🎨 **Modern UI/UX** - Beautiful gradient design with smooth animations
+- 🔊 **Sound Effects** - Interactive audio feedback for better UX
+- 📱 **Responsive Design** - Works seamlessly on all devices
+- 🚀 **Live Deployment** - Hosted on Streamlit Cloud
 
 ## 📊 Dataset Information
 
@@ -62,6 +88,11 @@ Bangalore_Housing_Prediction/
 ├── notebooks/                  # Jupyter notebooks for analysis
 │   └── CodeBasics Data Science Project - Housing Price Prediction.ipynb
 │
+├── screenshots/                # App screenshots
+│   ├── prediction.png
+│   ├── price-analysis.png
+│   └── price-distribution.png
+│
 ├── src/                        # Source code
 │   ├── models/                 # Trained models
 │   │   └── artifacts/
@@ -102,28 +133,38 @@ streamlit run app.py
 
 ## 📦 Deployment
 
-### Streamlit Community Cloud (Recommended)
+### Streamlit Community Cloud (Recommended - Currently Deployed!)
 1. Push your code to GitHub
 2. Go to [share.streamlit.io](https://share.streamlit.io)
 3. Connect your repository
 4. Deploy with one click!
 
+**Current Deployment:** [https://tb-bangalore-housing-prediction.streamlit.app/](https://tb-bangalore-housing-prediction.streamlit.app/)
+
 ### Other Platforms
 
-**Heroku:**
-```bash
-# Create Procfile
-echo "web: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0" > Procfile
-
-# Deploy
-heroku create your-app-name
-git push heroku master
-```
-
-**Railway/Render:**
+**Railway:**
 - Connect your GitHub repository
 - Set start command: `streamlit run app.py --server.port=$PORT --server.address=0.0.0.0`
 - Deploy automatically
+
+**Render:**
+- Connect your GitHub repository
+- Set start command: `streamlit run app.py --server.port=$PORT --server.address=0.0.0.0`
+- Deploy with free tier
+
+**Google Cloud Run / AWS / Azure:**
+- Deploy as containerized application
+- Use Dockerfile with Streamlit configuration
+
+## 🛠️ Technology Stack
+
+- **Frontend**: Streamlit
+- **Machine Learning**: scikit-learn (Linear Regression)
+- **Data Visualization**: Plotly, Matplotlib
+- **Data Processing**: Pandas, NumPy
+- **Model Serialization**: Pickle
+- **Deployment**: Streamlit Community Cloud
 
 ## 🔧 Retrain Model
 
@@ -139,3 +180,11 @@ This will:
 - Clean and preprocess the data
 - Train a Linear Regression model
 - Save the model to `src/models/artifacts/`
+
+## 📈 Model Performance
+
+- **Algorithm**: Linear Regression
+- **R² Score**: 0.8585
+- **Training Samples**: 6,958 properties
+- **Features**: 241 (including location encodings)
+- **Cross-validation**: 5-fold shuffle split
