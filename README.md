@@ -47,9 +47,34 @@ Real estate, Regression, India, Data cleaning, Housing market
 
 ---
 
-## 🚀 Quick Start
+## 📁 Project Structure
 
-### Option 1: Streamlit App (Recommended)
+```
+Bangalore_Housing_Prediction/
+├── app.py                      # Main Streamlit application
+├── requirements.txt            # Project dependencies
+├── README.md                   # Project documentation
+├── .gitignore                  # Git ignore rules
+│
+├── data/                       # Dataset files
+│   └── Bengaluru_House_Data.csv
+│
+├── notebooks/                  # Jupyter notebooks for analysis
+│   └── CodeBasics Data Science Project - Housing Price Prediction.ipynb
+│
+├── src/                        # Source code
+│   ├── models/                 # Trained models
+│   │   └── artifacts/
+│   │       ├── bangalore_home_prices_model.pickle
+│   │       └── columns.json
+│   │
+│   └── utils/                  # Utility scripts
+│       └── retrain_model.py    # Model training script
+│
+└── .venv/                      # Virtual environment (gitignored)
+```
+
+## 🚀 Quick Start
 
 1. Clone the repository:
 ```bash
@@ -57,53 +82,60 @@ git clone <repository-url>
 cd Bangalore_Housing_Prediction
 ```
 
-2. Install dependencies:
+2. Create a virtual environment (recommended):
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+```
+
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Run the Streamlit app:
+4. Run the Streamlit app:
 ```bash
-streamlit run app_streamlit.py
+streamlit run app.py
 ```
 
-4. Open your browser to `http://localhost:8501`
-
-### Option 2: Flask API + HTML Frontend
-
-1. Clone The Repository In Your Computer.
-2. Install dependencies: `pip install -r requirements.txt`
-3. Type "python server.py" in the command prompt.
-4. The server will start.
-5. Open `templates/app.html` in your default browser.
-6. Enter the inputs and click on estimate to get the Price Prediction.
+5. Open your browser to `http://localhost:8501`
 
 ## 📦 Deployment
 
-### Deploy Streamlit App
-
-**Streamlit Community Cloud:**
+### Streamlit Community Cloud (Recommended)
 1. Push your code to GitHub
 2. Go to [share.streamlit.io](https://share.streamlit.io)
 3. Connect your repository
 4. Deploy with one click!
 
+### Other Platforms
+
 **Heroku:**
 ```bash
-# Create Procfile for Streamlit
-echo "web: streamlit run app_streamlit.py --server.port=$PORT --server.address=0.0.0.0" > Procfile
+# Create Procfile
+echo "web: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0" > Procfile
 
 # Deploy
 heroku create your-app-name
 git push heroku master
 ```
 
-### Deploy Flask App
+**Railway/Render:**
+- Connect your GitHub repository
+- Set start command: `streamlit run app.py --server.port=$PORT --server.address=0.0.0.0`
+- Deploy automatically
 
-**Heroku:**
+## 🔧 Retrain Model
+
+To retrain the model with updated data:
+
 ```bash
-heroku create your-app-name
-git push heroku master
+cd src/utils
+python retrain_model.py
 ```
 
-The existing `Procfile` is configured for Flask deployment.
+This will:
+- Load data from `data/Bengaluru_House_Data.csv`
+- Clean and preprocess the data
+- Train a Linear Regression model
+- Save the model to `src/models/artifacts/`

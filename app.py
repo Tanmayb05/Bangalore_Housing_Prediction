@@ -59,11 +59,11 @@ st.markdown("""
 @st.cache_resource
 def load_saved_artifacts():
     """Load the trained model and location data"""
-    with open("./artifacts/columns.json", 'r') as f:
+    with open("./src/models/artifacts/columns.json", 'r') as f:
         data_columns = json.load(f)['data_columns']
         locations = data_columns[4:]
 
-    with open('./artifacts/bangalore_home_prices_model.pickle', 'rb') as f:
+    with open('./src/models/artifacts/bangalore_home_prices_model.pickle', 'rb') as f:
         model = pickle.load(f)
 
     return model, data_columns, locations

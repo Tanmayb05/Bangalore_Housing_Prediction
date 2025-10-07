@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 print("Loading and preprocessing data...")
 
 # Load data
-df1 = pd.read_csv("Bengaluru_House_Data.csv")
+df1 = pd.read_csv("../../data/Bengaluru_House_Data.csv")
 
 # Data cleaning and preprocessing
 df2 = df1.drop(['area_type','availability','society'], axis='columns')
@@ -95,14 +95,14 @@ print(f"Model R² score: {score:.4f}")
 
 # Save model
 print("Saving model to artifacts folder...")
-with open('./artifacts/bangalore_home_prices_model.pickle', 'wb') as f:
+with open('../models/artifacts/bangalore_home_prices_model.pickle', 'wb') as f:
     pickle.dump(lr_clf, f)
 
 # Save columns
 columns = {
     'data_columns': [col.lower() for col in X.columns]
 }
-with open('./artifacts/columns.json', 'w') as f:
+with open('../models/artifacts/columns.json', 'w') as f:
     f.write(json.dumps(columns))
 
 print("Model and columns saved successfully!")
